@@ -1,3 +1,5 @@
+
+
 CountryMap:
 MAPPING LOAD * INLINE [
 Country, NewCountry
@@ -6,11 +8,12 @@ U.S., US
 United States, US
 United States of America, US
 ];
-Data:
+
+CleanData:
 LOAD
-ID,
-Name,
-ApplyMap('CountryMap', Country, 'US') as Country,
-Code
-FROM [lib://Tutorial Files/Data.xlsx]
+    "Country Code",
+    
+    ApplyMap('CountryMap', Country) as CountryName
+FROM [lib://Hierarchylib/Qlik Sense developer\Data sources\CountryData.xlsx]
 (ooxml, embedded labels, table is Sheet1);
+
