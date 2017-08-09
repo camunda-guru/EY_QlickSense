@@ -1,0 +1,16 @@
+CountryMap:
+MAPPING LOAD * INLINE [
+Country, NewCountry
+U.S.A., US
+U.S., US
+United States, US
+United States of America, US
+];
+Data:
+LOAD
+ID,
+Name,
+ApplyMap('CountryMap', Country, 'US') as Country,
+Code
+FROM [lib://Tutorial Files/Data.xlsx]
+(ooxml, embedded labels, table is Sheet1);
