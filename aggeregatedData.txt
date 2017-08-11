@@ -1,0 +1,25 @@
+ProductData:
+LOAD * inline [
+Customer|Product|UnitSales|UnitPrice
+Astrida|AA|4|16
+Astrida|AA|10|15
+Astrida|BB|9|9
+Betacab|BB|5|10
+Betacab|CC|2|20
+Betacab|DD||25
+Canutility|AA|8|15
+Canutility|CC||19
+] (delimiter is '|');
+
+
+Temp:
+crosstable (Month, Sales) load * inline [
+Customer|Jan|Feb|Mar||Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec
+Astrida|46|60|70|13|78|20|45|65|78|12|78|22
+Betacab|65|56|22|79|12|56|45|24|32|78|55|15
+Canutility|77|68|34|91|24|68|57|36|44|90|67|27
+Divadip|36|44|90|67|27|57|68|47|90|80|94
+] (delimiter is '|');
+Avg1:
+LOAD Customer, Avg(Sales) as MyAverageSalesByCustomer
+Resident Temp Group By Customer;
