@@ -1,0 +1,41 @@
+LOAD
+    FieldName,
+    BitOffset,
+    BitWidth,
+    Bias,
+    NoOfSymbols,
+    [NumberFormat/Type] as Type,
+    [NumberFormat/nDec] as nDec,
+    [NumberFormat/UseThou] as UseThou
+FROM [lib://QVDlib\worlddata.qvd] (XmlSimple, Table is [QvdTableHeader/Fields/QvdFieldHeader]);
+
+-----------------------------------------------------------
+
+
+
+sub DoDir (Root)
+for each Ext in 'qvw', 'qva', 'qvo', 'qvs', 'qvc', 'qvf', 'qvd'
+for each File in filelist (Root&'\*.' &Ext)
+LOAD
+'$(File)' as Name,
+FileSize( '$(File)' ) as Size,
+FileTime( '$(File)' ) as FileTime
+autogenerate 1;
+next File
+next Ext
+for each Dir in dirlist (Root&'\*' )
+call DoDir (Dir)
+next Dir
+end sub
+
+
+
+call DoDir ('lib://ScriptTest')
+
+
+
+
+
+
+
+
