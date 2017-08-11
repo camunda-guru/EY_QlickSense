@@ -1,0 +1,107 @@
+LOAD
+ Date,
+ Date(Date,'DD-MMM-YYYY’) as NewDateFormat,
+ Product,
+ Sales,
+ Time
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx](ooxml, embedded labels, table is Sheet1);
+
+LOAD
+ Date,
+ Date (Date,'DD/MMM/YYYY’) as NewDateFormat,
+ [Multiple Date Formats],
+ Date # ([Multiple Date Formats]) as ConvertDate_Number,
+ Product,
+ Sales,
+ Time
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx]
+ (ooxml, embedded labels, table is Sheet1);
+
+
+Syntax:
+              Year (Date Field) as New Field Name,
+              ‘Q’& Ceil (Month (Date Field)/3) AS New Field Name,
+               Month (Date Field) as New Field Name,
+               Week (Date Field) as New Field Name
+Example with Screen Shot:
+LOAD
+ Date,
+ Date (Date,'DD/MMM/YYYY') as NewDateFormat,
+ Year (Date) as Year,
+ 'Q'& Ceil (Month (Date) /3) AS Quarter,
+ Month (Date) as Month,
+ Week (Date) as Week,
+ [Multiple Date Formats],
+ Date # ( [Multiple Date Formats] ) as convert_Number,
+ Product,
+ Sales,
+ Time
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx]
+ (ooxml, embedded labels, table is Sheet1);
+
+
+Syntax: Date (Alt (Date Field name),’date format’) as new field name.
+ Date ( Alt ( [Multiple Date Formats] ),’DD/MMM/YY’) as altdate
+Example with Screen Shot:
+LOAD 
+ Date,
+ Date (Date,'DD/MMM/YYYY') as NewDateFormat,
+ [Multiple Date Formats],
+ DATE ( Date# ( [Multiple Date Formats] ),'DD/MM/YYYY') as ConvertDate_Number,
+ Date ( Alt ( [Multiple Date Formats] ),'DD/MMM/YY') as altdate,
+ Product,
+ Sales,
+ Time
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx]
+ (ooxml, embedded labels, table is Sheet1);
+
+Syntax: Timestamp# (Timestamp (Field name, ‘Format to be used’),’Existing format’)                                      as new field name.
+Timestamp # (Timestamp (Time,’DD.MM.YYYY hh:mm:ss’),’mm/dd/yyyy hh:mm’) as Timestamp
+Example with Screen Shot:
+LOAD
+ Date,
+ Date ( Date,'DD/MMM/YYYY') as NewDateFormat,
+ [Multiple Date Formats],
+ Date # ( [Multiple Date Formats] ) as convert_Number,
+ date (Alt ( [Multiple Date Formats] ),'DD/MMM/YY') as altdate,
+ Product,
+ Sales,
+ Time,
+ Timestamp # (Timestamp (Time,'DD.MM.YYYY hh:mm'),'mm/dd/yyyy hh:mm') as Timestamp,
+ Timestamp ( Time, 'yyyy hh:mm:ss') as [Year & Time]
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx]
+ (ooxml, embedded labels, table is Sheet1);
+
+Syntax: Timestamp# (Field name, ‘Format to be used’) as new field name.
+ Timestamp # ( Time, ‘dd/mm/yyyy hh:mm’) as Datetime#,
+Example with Screen Shot:
+LOAD 
+ Date,
+ Date ( Date,'DD/MMM/YYYY') as NewDateFormat,
+ Year (Date) as Year,
+ Month (Date) as Month,
+ [Multiple Date Formats],
+ Date # ( [Multiple Date Formats] ) as convert_Number,
+ date (Alt ( [Multiple Date Formats] ),'DD/MMM/YY') as altdate,
+ Product,
+ Sales,
+ Time,
+ Timestamp # (Timestamp (Time,'DD.MM.YYYY hh:mm'),'mm/dd/yyyy hh:mm') as Timestamp,
+ Timestamp ( Time, 'yyyy hh:mm:ss') as [Year & Time],
+ Timestamp # ( Time, 'dd/mm/yyyy hh:mm') as Timestamp#
+FROM
+ [C:\Users\abc\Desktop\Sample.xlsx]
+ (ooxml, embedded labels, table is Sheet1);
+
+
+
+
+
+
+
+

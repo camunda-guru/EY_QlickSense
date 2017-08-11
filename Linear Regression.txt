@@ -1,0 +1,141 @@
+http://help.qlik.com/en-US/sense/June2017/Subsystems/Hub/Content/Scripting/StatisticalAggregationFunctions/skew.htm
+
+
+
+LINEST_B - script function
+LINEST_B() returns the aggregated b value (y-intercept) of a linear regression defined by the equation y=mx+b for a series of coordinates represented by paired numbers in x-expression and y-expression iterated over a number of records as defined by a group by clause.
+
+
+
+Syntax:  
+
+LINEST_B (y_value, x_value[, y0 [, x0 ]])
+
+
+
+LINEST_DF - script function
+LINEST_DF() returns the aggregated degrees of freedom of a linear regression defined by the equation y=mx+b for a series of coordinates represented by paired numbers in x-expression and y-expression iterated over a number of records as defined by a group by clause.
+
+Syntax:  
+
+LINEST_DF (y_value, x_value[, y0 [, x0 ]])
+Return data type: numeric
+
+
+
+
+
+T1:
+LOAD *, 1 as Grp;
+LOAD * inline [
+X |Y
+1| 0
+2|1
+3|3
+4| 8
+5| 14
+6| 20
+7| 0
+8| 50
+9| 25
+10| 60
+11| 38
+12| 19
+13| 26
+14| 143
+15| 98
+16| 27
+17| 59
+18| 78
+19| 158
+20| 279 ] (delimiter is '|');
+R1:
+LOAD
+Grp,
+linest_B(Y,X) as Linest_B,
+linest_DF(Y,X) as Linest_DF,
+linest_F(Y,X) as Linest_F,
+linest_M(Y,X) as Linest_M,
+linest_R2(Y,X) as Linest_R2,
+linest_SEB(Y,X,1,1) as Linest_SEB,
+linest_SEM(Y,X) as Linest_SEM,
+linest_SEY(Y,X) as Linest_SEY,
+linest_SSREG(Y,X) as Linest_SSREG,
+linest_SSRESID(Y,X) as Linest_SSRESID
+resident T1 group by Grp;
+
+
+Skew() returns the skewness of expression over a number of records as defined by a group by clause.
+
+Syntax:  
+
+Skew([ distinct] expr)
+Return data type: numeric
+
+Table1:
+crosstable LOAD recno() as ID, * inline [
+Observation|Comparison
+35|2
+40|27
+12|38
+15|31
+21|1
+14|19
+46|1
+10|34
+28|3
+48|1
+16|2
+30|3
+32|2
+48|1
+31|2
+22|1
+12|3
+39|29
+19|37
+25|2 ] (delimiter is '|');
+ 
+Skew1:
+LOAD Type,
+Skew(Value) as MySkew
+Resident Table1 Group By Type;
+
+Kurtosis - script function
+Kurtosis() returns the kurtosis of the data in the expression over a number of records as defined by a group by clause.
+
+Syntax:  
+
+Kurtosis([distinct ] expr )
+
+Table1:
+crosstable LOAD recno() as ID, * inline [
+Observation|Comparison
+35|2
+40|27
+12|38
+15|31
+21|1
+14|19
+46|1
+10|34
+28|3
+48|1
+16|2
+30|3
+32|2
+48|1
+31|2
+22|1
+12|3
+39|29
+19|37
+25|2 ] (delimiter is '|');
+ 
+Kurtosis1:
+LOAD Type,
+Kurtosis(Value) as MyKurtosis1,
+Kurtosis(DISTINCT Value) as MyKurtosis2
+Resident Table1 Group By Type;
+
+

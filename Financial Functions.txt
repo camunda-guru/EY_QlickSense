@@ -1,0 +1,292 @@
+Cashflow:
+LOAD 2013 as Year, * inline [
+Date|Discount|Payments
+2013-01-01|0.1|-10000
+2013-03-01|0.1|3000
+2013-10-30|0.1|4200
+2014-02-01|0.2|6800
+] (delimiter is '|');
+ 
+Cashflow1:
+LOAD Year,NPV(0.2, Payments) as NPV1_2013 Resident Cashflow Group By Year;
+
+
+----------------------------
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|CustomerID
+Astrida|AA|1|10|1
+Astrida|AA|7|18|1
+Astrida|BB|4|9|1
+Astrida|CC|6|2|1
+Betacab|AA|5|4|2
+Betacab|BB|2|5|2
+Betacab|DD
+Canutility|DD|3|8
+Canutility|CC
+] (delimiter is '|');
+FirstSortedValue:
+LOAD Customer,FirstSortedValue(Product, -
+UnitSales) as MyProductWithLargestOrderByCustomer
+Resident Temp Group By Customer;
+
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|CustomerID
+Astrida|AA|1|10|1
+Astrida|AA|7|18|1
+Astrida|BB|4|9|1
+Astrida|CC|6|2|1
+Betacab|AA|5|4|2
+Betacab|BB|2|5|2
+Betacab|DD
+Canutility|DD|3|8
+Canutility|CC
+] (delimiter is '|');
+Mode:
+LOAD Customer, Mode(Product) as MyMostOftenSoldProduct
+Resident Temp Group By Customer;
+
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|CustomerID
+Astrida|AA|1|10|1
+Astrida|AA|7|18|1
+Astrida|BB|4|9|1
+Astrida|CC|6|2|1
+Betacab|AA|5|4|2
+Betacab|BB|2|5|2
+Betacab|DD
+Canutility|DD|3|8
+Canutility|CC
+] (delimiter is '|');
+Only:
+LOAD Customer, Only(CustomerID) as MyUniqIDCheck
+Resident Temp Group By Customer;
+
+
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|UnitPrice
+Astrida|AA|1|4|16
+Astrida|AA|7|10|15
+Astrida|BB|4|9|9
+Betacab|CC|6|5|10
+Betacab|AA|5|2|20
+Betacab|BB||| 25
+Canutility|AA|||15
+Canutility|CC| ||19
+Divadip|CC|2|4|16
+Divadip|DD|3|1|25
+] (delimiter is '|');
+MissCount1:
+LOAD Customer,MissingCount(OrderNumber) as
+MissingOrdersByCustomer Resident Temp Group By Customer;
+
+Set NULLINTERPRET = NULL;
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|CustomerID
+Astrida|AA|1|10|1
+Astrida|AA|7|18|1
+Astrida|BB|4|9|1
+Astrida|CC|6|2|1
+Betacab|AA|5|4|2
+Betacab|BB|2|5|2
+Betacab|DD|||
+Canutility|AA|3|8|
+Canutility|CC|NULL||
+] (delimiter is '|');
+Set NULLINTERPRET=;
+NullCount1:
+LOAD Customer,NullCount(OrderNumber) as
+NullOrdersByCustomer Resident Temp Group By Customer;
+LOAD NullCount(OrderNumber) as TotalNullCount Resident
+Temp;
+
+
+Temp:
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|UnitPrice
+Astrida|AA|1|4|16
+Astrida|AA|7|10|15
+Astrida|BB|4|9|9
+Betacab|CC|6|5|10
+Betacab|AA|5|2|20
+Betacab|BB||| 25
+Canutility|AA|||15
+Canutility|CC| ||19
+Divadip|CC|2|4|16
+Divadip|DD|7|1|25
+] (delimiter is '|');
+NumCount1:
+LOAD Customer,NumericCount(OrderNumber) as
+NumericCountByCustomer Resident Temp Group By
+Customer;
+
+LOAD * inline [
+Customer|Product|OrderNumber|UnitSales|UnitPrice
+Astrida|AA|1|4|16
+Astrida|AA|7|10|15
+Astrida|BB|4|9|9
+Betacab|CC|6|5|10
+Betacab|AA|5|2|20
+Betacab|BB||| 25
+Canutility|AA|||15
+Canutility|CC| ||19
+Divadip|CC|2|4|16
+Divadip|DD|3|1|25
+] (delimiter is '|');
+TextCount1:
+LOAD Customer,TextCount(Product) as ProductTextCount
+Resident Temp Group By Customer;
+
+
+
+
+
+PayTable:
+LOAD *, recno() as InvID, INLINE [
+InvRec|InvPaid
+28/03/2012|28/04/2012
+10/12/2012|01/01/2013
+5/2/2013|5/3/2013
+31/3/2013|01/5/2013
+19/5/2013|12/6/2013
+15/9/2013|6/10/2013
+11/12/2013|12/01/2014
+2/3/2014|2/4/2014
+14/5/2014|14/6/2014
+13/6/2014|14/7/2014
+7/7/2014|14/8/2014
+4/8/2014|4/9/2014
+] (delimiter is '|');
+NrDays:
+Load *,
+NetWorkDays(InvRec,InvPaid) As PaidDays
+Resident PayTable;
+Drop table PayTable;
+
+TempTable:
+LOAD RecNo() as InvID, * Inline [
+InvDate
+28/03/2012
+10/12/2012
+5/2/2013
+31/3/2013
+19/5/2013
+15/9/2013
+11/12/2013
+2/3/2014
+14/5/2014
+13/6/2014
+7/7/2014
+4/8/2014
+];
+InvoiceData:
+LOAD *,
+QuarterEnd(InvDate, 0, 3) AS QtrEnd
+Resident TempTable;
+Drop table TempTable;
+
+
+
+
+
+
+
+
+
+
+
+
+//correlation function
+
+Salary:
+Load *, 1 as Grp;
+LOAD * inline [
+"Employee name"|Gender|Age|Salary
+Aiden Charles|Male|20|25000
+Brenda Davies|Male|25|32000
+Charlotte Edberg|Female|45|56000
+Daroush Ferrara|Male|31|29000
+Eunice Goldblum|Female|31|32000
+Freddy Halvorsen|Male|25|26000
+Gauri Indu|Female|36|46000
+Harry Jones|Male|38|40000
+Ian Underwood|Male|40|45000
+Jackie Kingsley|Female|23|28000
+] (delimiter is '|');
+ 
+Correl1:
+LOAD Grp,
+Correl(Age,Salary) as Correl_Salary Resident Salary Group By Grp;
+
+
+
+//Data Cleansing
+
+CountryMap:
+MAPPING LOAD * INLINE [
+Country, NewCountry
+U.S.A., US
+U.S., US
+United States, US
+United States of America, US
+];
+
+
+CountryMap:
+MAPPING LOAD * INLINE [
+Country, NewCountry
+U.S.A., US
+U.S., US
+United States, US
+United States of America, US
+];
+Data:
+LOAD
+ID,
+Name,
+ApplyMap('CountryMap', Country, 'US') as Country,
+Code
+FROM [lib://Tutorial Files/Data.xlsx]
+(ooxml, embedded labels, table is Sheet1);
+
+log files
+
+
+pos=1
+do while pos<4
+load * from [lib://ScriptLib/Qlik Sense developer\Data sources/file$(pos).csv] (txt, codepage is 28591, embedded labels, delimiter is ',', msq);
+let pos=pos+1;
+loop
+
+
+Tab2:
+Load * from [lib://ScriptLib/Qlik Sense developer\Data sources\file1.csv] (txt, codepage is 28591, embedded labels, delimiter is ',', msq);
+Tab3:
+load * from [lib://ScriptLib/Qlik Sense developer\Data sources\file2.csv] (txt, codepage is 28591, embedded labels, delimiter is ',', msq);
+
+Concatenate (Tab3) load * from [lib://ScriptLib/Qlik Sense developer\Data sources\file3.csv](txt, codepage is 28591, embedded labels, delimiter is ',', msq) ;
+
+
+
+Tab1:
+
+LOAD
+    Name,
+    "Phone Number"
+FROM [lib://ScriptLib/Qlik Sense developer\Data sources\Persons.csv]
+(txt, codepage is 28591, embedded labels, delimiter is ',', msq);
+
+ADD LOAD Name, "Phone Number" FROM [lib://ScriptLib/Qlik Sense developer\Data sources\NewPersons.csv] (txt, codepage is 28591, embedded labels, delimiter is ',', msq) Where not exists(Name) ;
+
+
+
+
+
+
+
+
+
