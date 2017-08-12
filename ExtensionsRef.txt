@@ -1,0 +1,15 @@
+Marquee 
+Field UI
+Qlik Sense Python
+Qlik sense list box
+Google Organization Chart
+Org Chart(Network Diagram)
+Sense UI Stacked Bar
+Google Maps(Paid service)
+Sense UI SVG Reader
+Icon Graph
+Quick Adhoc
+Facebook Post Analyser
+Qlik sense ESRI(ARC GIS paid service)
+Gesture Mashup
+
